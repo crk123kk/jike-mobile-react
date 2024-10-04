@@ -1,0 +1,5 @@
+// 统一管理工具模块
+
+import { request } from './request'
+
+export { request }
