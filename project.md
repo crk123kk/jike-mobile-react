@@ -31,3 +31,9 @@
     配置拦截器、基本请求等
 
     axios 封装
+
+# 使用 Redux 管理 token
+
+    redux 对 token 的同步异步修改
+
+    token 的持久化
