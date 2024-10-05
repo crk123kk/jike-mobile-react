@@ -9,3 +9,5 @@
     前端框架 ：react
 
     组件库 ：ant design
+
+    样式初始化库：normalize.css
