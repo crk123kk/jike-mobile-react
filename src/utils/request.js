@@ -8,7 +8,8 @@
 */
 
 import axios from "axios";
-import { getToken } from "./token";
+import { getToken, removeToken } from "./token";
+import router from "@/router";
 
 const request = axios.create({
     // 根域名
@@ -33,6 +34,14 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use((res) => {
     return res.data
 }, (err) => {
+    // 监控 401 对 token失效进行处理
+    if (err.response.status === 401) {
+        removeToken()
+        router.navigate('/login')
+        // 如果页面不跳转则强制刷新
+        window.location.reload()
+    }
+
     return Promise.reject(err)
 })
 

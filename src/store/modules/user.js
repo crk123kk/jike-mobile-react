@@ -1,6 +1,6 @@
 // 和用户相关的状态管理
 
-import { setToken as _setToken, getToken, request } from "@/utils";
+import { setToken as _setToken, getToken, removeToken, request } from "@/utils";
 
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -18,13 +18,19 @@ const userStore = createSlice({
         },
         setUserInfo(state, action) {
             state.userInfo = action.payload
+        },
+        clearUserInfo(state) {
+            // 不仅要清空 token 还要清空个人信息，并且将持久化的信息情况
+            state.token = ''
+            state.userInfo = {}
+            removeToken()
         }
 
     }
 })
 
 // 解构 actionCreate
-const { setToken, setUserInfo } = userStore.actions
+const { setToken, setUserInfo, clearUserInfo } = userStore.actions
 
 // 登录
 const fetchLogin = (loginForm) => {
@@ -37,13 +43,13 @@ const fetchLogin = (loginForm) => {
 // 获取个人用户信息
 const fetchUserInfo = () => {
     return async (dispatch) => {
-        const res = await request.post('/user/profile')
+        const res = await request.get('/user/profile')
         dispatch(setUserInfo(res.data))
     }
 }
 
 
-export { setToken, fetchLogin, fetchUserInfo }
+export { setToken, fetchLogin, fetchUserInfo, clearUserInfo }
 
 // 解构 reducer
 const userReducer = userStore.reducer
