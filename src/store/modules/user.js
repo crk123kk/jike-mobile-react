@@ -1,6 +1,7 @@
 // 和用户相关的状态管理
 
-import { setToken as _setToken, getToken, removeToken, request } from "@/utils";
+import { getProfileAPI, loginAPI } from "@/apis/user";
+import { setToken as _setToken, getToken, removeToken } from "@/utils";
 
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -35,7 +36,7 @@ const { setToken, setUserInfo, clearUserInfo } = userStore.actions
 // 登录
 const fetchLogin = (loginForm) => {
     return async (dispatch) => {
-        const res = await request.post('/authorizations', loginForm)
+        const res = await loginAPI(loginForm)
         dispatch(setToken(res.data.token))
     }
 }
@@ -43,7 +44,7 @@ const fetchLogin = (loginForm) => {
 // 获取个人用户信息
 const fetchUserInfo = () => {
     return async (dispatch) => {
-        const res = await request.get('/user/profile')
+        const res = await getProfileAPI()
         dispatch(setUserInfo(res.data))
     }
 }

@@ -19,6 +19,7 @@ module.exports = {
         // 示例：允许在React组件中不定义propTypes（如果使用TypeScript等其他类型检查方式）
         'react/prop-types': 'off',
         // 可以根据项目需求继续添加更多规则
-        'no-console': 'warn'
+        'no-console': 'warn',
+        'no-unused-vars': 'warn'
     }
 };
