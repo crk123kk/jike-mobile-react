@@ -8,6 +8,9 @@ import {
 } from '@ant-design/icons'
 import './index.scss'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { fetchUserInfo } from '@/store/modules/user'
 
 const { Header, Sider } = Layout
 
@@ -37,6 +40,12 @@ const GeekLayout = () => {
     const location = useLocation()
     const selectedKeys = location.pathname
 
+    const dispatch = useDispatch()
+    // 触发个人用户信息获取
+    useEffect(() => {
+        // dispatch(fetchUserInfo())
+    }, [dispatch])
+
     return (
         <Layout>
             <Header className="header">
@@ -60,7 +69,6 @@ const GeekLayout = () => {
                         style={{ height: '100%', borderRight: 0 }}
                         onClick={handleMenuClick}
                     >
-
                     </Menu>
                 </Sider>
                 <Layout className="layout-content" style={{ padding: 20 }}>
