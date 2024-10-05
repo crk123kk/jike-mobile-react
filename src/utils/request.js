@@ -8,6 +8,7 @@
 */
 
 import axios from "axios";
+import { getToken } from "./token";
 
 const request = axios.create({
     // 根域名
@@ -17,7 +18,12 @@ const request = axios.create({
 })
 
 // 请求拦截器
+// config 是请求的配置信息, 插入自定义的配置
 request.interceptors.request.use((config) => {
+    const token = getToken()
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
     return config
 }, (err) => {
     return Promise.reject(err)

@@ -37,3 +37,19 @@
     redux 对 token 的同步异步修改
 
     token 的持久化
+
+    封装token操作
+
+        多模块会使用到token，所以封装起来方便使用
+
+    在拦截器中注入 token
+
+# 使用 token 做路由权限控制
+
+    高阶组件的封装
+
+        核心逻辑：
+
+            有token
+
+            无token
