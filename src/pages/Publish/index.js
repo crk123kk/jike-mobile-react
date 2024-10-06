@@ -19,7 +19,6 @@ import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
 import { createArticleAPI, getArticleByIdAPI, updateArticleAPI } from '@/apis/article'
 import { useChannel } from '@/hooks/useChannel'
-import { type } from '@testing-library/user-event/dist/type'
 
 const { Option } = Select
 
