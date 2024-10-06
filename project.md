@@ -105,3 +105,33 @@
 # 编辑文章
 
     回填功能
+
+# 项目打包
+
+    项目打包，本地部署 server 服务
+
+# 项目优化
+
+    路由懒加载
+
+# 分析包体积大小
+
+    source-map-explorer
+
+    "analyze": "source-map-explorer build/static/js/*.js"
+
+        这个指令是告诉 source-map-explorer 去分析 build/static/js 目录下的所有 js 文件
+
+# 项目优化
+
+    CDN 优化
+
+        体积较大的非业务 JS 文件，比如 react、react-dom
+
+            1、体积较大，需要利用 CDN 文件在浏览器的缓存特性，加快加载时间
+            2、非业务 JS 文件，不需要经常做变动， CDN 不用频繁更新缓存
+
+        项目中做法：
+
+            1、把需要做 CDN 缓存的文件排除在打包之外（react\react-dom)
+            2、以CDN的方式重新引入资源（react、react-dom）

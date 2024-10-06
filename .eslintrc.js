@@ -20,6 +20,6 @@ module.exports = {
         'react/prop-types': 'off',
         // 可以根据项目需求继续添加更多规则
         'no-console': 'warn',
-        'no-unused-vars': 'warn , {"vars":"local"}'
+        'no-unused-vars': ['warn', { "vars": "local", "args": "none" }]
     }
 };
