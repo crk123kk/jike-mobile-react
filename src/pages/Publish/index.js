@@ -12,33 +12,27 @@ import {
     message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
-import { createArticleAPI, getChannelAPI } from '@/apis/article'
+import { createArticleAPI, getArticleByIdAPI, updateArticleAPI } from '@/apis/article'
+import { useChannel } from '@/hooks/useChannel'
 import { type } from '@testing-library/user-event/dist/type'
 
 const { Option } = Select
 
 const Publish = () => {
     // 获取频道列表
-    const [channelList, setChannelList] = useState([])
-    useEffect(() => {
-        const getChannelList = async () => {
-            const res = await getChannelAPI()
-            setChannelList(res.data.channels)
-        }
-        getChannelList()
+    const { channelList } = useChannel()
+    const navigate = useNavigate()
 
-    }, [])
-
-    const onHandleSubmit = (formValue) => {
+    const onHandleSubmit = async (formValue) => {
 
         if (imageList.length !== imageType) return message.warning('封面类型和图片数量不匹配')
 
-        const { title, channel_id, content } = formValue
+        const { title, channel_id, content, type } = formValue
 
         // 处理表单数据
         const reqData = {
@@ -46,12 +40,28 @@ const Publish = () => {
             content,
             channel_id,
             cover: {
-                type: 0,
-                images: imageList.map(item => item.response.data.url)
+                type: type,
+                images: imageList.map(item => {
+                    if (item.response) {
+                        // 第一次发布的情况下才有的字段（新加的图片才会有）
+                        return item.response.data.url
+                    } else {
+                        // 编辑的情况
+                        return item.url
+                    }
+                })
 
             },
         }
-        createArticleAPI(reqData)
+        if (articleId) {
+            // 更新文章
+            await updateArticleAPI({ ...reqData, id: articleId })
+        } else {
+            // 发布文章
+            await createArticleAPI(reqData)
+        }
+        navigate('/article')
+
     }
 
     const [imageList, setImageList] = useState([])
@@ -64,13 +74,40 @@ const Publish = () => {
         setImageType(e.target.value)
     }
 
+    const [searchParams] = useSearchParams()
+    const articleId = searchParams.get('id')
+
+    // 获取表单实例
+    const [articleForm] = Form.useForm()
+
+    useEffect(() => {
+        if (articleId) {
+            const getArticleById = async () => {
+                const res = await getArticleByIdAPI(articleId)
+                const data = res.data
+                const { cover } = data
+                articleForm.setFieldsValue({
+                    ...data,
+                    type: cover.type
+                })
+                setImageType(cover.type)
+                setImageList(cover.images.map(url => {
+                    return { url }
+                }))
+
+            }
+            getArticleById()
+        }
+    }, [articleId, articleForm])
+
     return (
         <div className="publish">
             <Card
                 title={
                     <Breadcrumb items={[
                         { title: <Link to={'/'}>首页</Link> },
-                        { title: '发布文章' },
+                        { title: articleId ? '编辑文章' : '发布文章' },
+
                     ]}
                     />
                 }
@@ -80,6 +117,7 @@ const Publish = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{ type: imageType }}
                     onFinish={onHandleSubmit}
+                    form={articleForm}
                 >
                     <Form.Item
                         label="标题"
@@ -114,6 +152,7 @@ const Publish = () => {
                             action={'http://geek.itheima.net/v1_0/upload'}
                             onChange={onUploadChange}
                             maxCount={imageType}
+                            fileList={imageList}
                         >
                             <div style={{ marginTop: 8 }}>
                                 <PlusOutlined />
